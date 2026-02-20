@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "truelist/version"
-require_relative "truelist/configuration"
-require_relative "truelist/result"
-require_relative "truelist/client"
+require_relative 'truelist/version'
+require_relative 'truelist/configuration'
+require_relative 'truelist/result'
+require_relative 'truelist/client'
 
 module Truelist
   class Error < StandardError; end
@@ -30,5 +30,5 @@ module Truelist
   end
 end
 
-require_relative "truelist/railtie" if defined?(Rails::Railtie)
-require_relative "truelist/validators/deliverable_validator"
+require_relative 'truelist/railtie' if defined?(Rails::Railtie)
+require_relative 'truelist/validators/deliverable_validator'

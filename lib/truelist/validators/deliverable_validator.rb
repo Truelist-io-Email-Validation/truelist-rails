@@ -12,7 +12,10 @@ class DeliverableValidator < ActiveModel::EachValidator
                     Truelist.configuration.allow_risky
                   end
 
-    deliverable = result.state == "valid" || (result.state == "risky" && allow_risky) || result.unknown?
+    # Fail open for transient errors (timeouts, 500s) so forms still work when API is down
+    return if result.error?
+
+    deliverable = result.state == 'valid' || (result.state == 'risky' && allow_risky) || result.unknown?
 
     return if deliverable
 

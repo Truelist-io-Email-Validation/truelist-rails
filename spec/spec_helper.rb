@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "webmock/rspec"
-require "active_model"
-require "truelist"
+require 'webmock/rspec'
+require 'active_model'
+require 'truelist'
 
 WebMock.disable_net_connect!
 
@@ -23,7 +23,7 @@ RSpec.configure do |config|
   config.before do
     Truelist.reset_configuration!
     Truelist.configure do |c|
-      c.api_key = "test_api_key"
+      c.api_key = 'test_api_key'
     end
   end
 end

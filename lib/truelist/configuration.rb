@@ -6,8 +6,8 @@ module Truelist
                   :allow_risky, :cache_store, :cache_ttl
 
     def initialize
-      @api_key = ENV["TRUELIST_API_KEY"]
-      @base_url = "https://api.truelist.io"
+      @api_key = ENV.fetch('TRUELIST_API_KEY', nil)
+      @base_url = 'https://api.truelist.io'
       @timeout = 10
       @raise_on_error = false
       @allow_risky = true
@@ -16,7 +16,8 @@ module Truelist
     end
 
     def api_key!
-      api_key || raise(Truelist::Error, "Truelist API key is not configured. Set TRUELIST_API_KEY or use Truelist.configure.")
+      api_key || raise(Truelist::AuthenticationError,
+                       'Truelist API key is not configured. Set TRUELIST_API_KEY or use Truelist.configure.')
     end
   end
 end

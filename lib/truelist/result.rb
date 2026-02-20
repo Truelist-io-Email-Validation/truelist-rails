@@ -2,9 +2,10 @@
 
 module Truelist
   class Result
-    attr_reader :email, :state, :sub_state, :suggestion, :free_email, :role, :disposable
+    attr_reader :email, :state, :sub_state, :suggestion, :free_email, :role, :disposable, :error
 
-    def initialize(email:, state:, sub_state: nil, suggestion: nil, free_email: false, role: false, disposable: false)
+    def initialize(email:, state:, sub_state: nil, suggestion: nil, free_email: false, role: false, disposable: false,
+                   error: false)
       @email = email
       @state = state.to_s
       @sub_state = sub_state&.to_s
@@ -12,22 +13,23 @@ module Truelist
       @free_email = free_email
       @role = role
       @disposable = disposable
+      @error = error
     end
 
     def valid?
-      state == "valid" || (state == "risky" && Truelist.configuration.allow_risky)
+      state == 'valid' || (state == 'risky' && Truelist.configuration.allow_risky)
     end
 
     def invalid?
-      state == "invalid"
+      state == 'invalid'
     end
 
     def risky?
-      state == "risky"
+      state == 'risky'
     end
 
     def unknown?
-      state == "unknown"
+      state == 'unknown'
     end
 
     def free_email?
@@ -40,6 +42,10 @@ module Truelist
 
     def disposable?
       @disposable
+    end
+
+    def error?
+      @error
     end
   end
 end

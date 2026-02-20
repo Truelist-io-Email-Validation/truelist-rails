@@ -3,7 +3,7 @@
 Email validation for Rails, powered by [Truelist.io](https://truelist.io).
 
 [![Gem Version](https://badge.fury.io/rb/truelist-rails.svg)](https://badge.fury.io/rb/truelist-rails)
-[![CI](https://github.com/truelist/truelist-rails/actions/workflows/ci.yml/badge.svg)](https://github.com/truelist/truelist-rails/actions/workflows/ci.yml)
+[![CI](https://github.com/Truelist-io-Email-Validation/truelist-rails/actions/workflows/ci.yml/badge.svg)](https://github.com/Truelist-io-Email-Validation/truelist-rails/actions/workflows/ci.yml)
 
 Validate email deliverability in your Rails models with a single line:
 
@@ -217,7 +217,7 @@ allow(Truelist::Client).to receive(:new).and_return(
 ## Development
 
 ```bash
-git clone https://github.com/truelist/truelist-rails.git
+git clone https://github.com/Truelist-io-Email-Validation/truelist-rails.git
 cd truelist-rails
 bundle install
 bundle exec rspec
