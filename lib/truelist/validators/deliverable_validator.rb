@@ -15,7 +15,7 @@ class DeliverableValidator < ActiveModel::EachValidator
     # Fail open for transient errors (timeouts, 500s) so forms still work when API is down
     return if result.error?
 
-    deliverable = result.state == 'valid' || (result.state == 'risky' && allow_risky) || result.unknown?
+    deliverable = result.state == 'ok' || (result.state == 'accept_all' && allow_risky) || result.unknown?
 
     return if deliverable
 

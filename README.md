@@ -68,7 +68,7 @@ Truelist.configure do |config|
   # allowing the validation to pass gracefully.
   config.raise_on_error = false
 
-  # Whether "risky" emails (accept-all domains, etc.) pass validation.
+  # Whether "accept_all" emails (domains that accept all addresses) pass validation.
   config.allow_risky = true
 
   # Optional cache store for validation results.
@@ -88,7 +88,7 @@ end
 validates :email, deliverable: true
 ```
 
-### Reject risky emails
+### Reject accept_all emails
 
 ```ruby
 validates :email, deliverable: { allow_risky: false }
@@ -123,33 +123,51 @@ Use the client to validate emails outside of model validations:
 ```ruby
 result = Truelist.validate("user@example.com")
 
-result.state      # => "valid", "invalid", "risky", or "unknown"
-result.sub_state  # => "ok", "failed_no_mailbox", "disposable_address", etc.
-result.valid?     # => true/false (respects allow_risky config)
-result.invalid?   # => true/false
-result.risky?     # => true/false
-result.unknown?   # => true/false
+result.state       # => "ok", "email_invalid", "accept_all", or "unknown"
+result.sub_state   # => "email_ok", "is_disposable", "is_role", etc.
+result.valid?      # => true when state is "ok" (or "accept_all" with allow_risky)
+result.invalid?    # => true when state is "email_invalid"
+result.accept_all? # => true when state is "accept_all"
+result.unknown?    # => true when state is "unknown"
 
+result.email        # => the validated email address
 result.suggestion   # => suggested correction, if available
-result.free_email?  # => whether it's a free email provider
-result.role?        # => whether it's a role address (info@, admin@, etc.)
-result.disposable?  # => whether it's a disposable/temporary address
+result.domain       # => email domain
+result.canonical    # => local part of the email
+result.mx_record    # => MX record for the domain
+result.first_name   # => first name, if available
+result.last_name    # => last name, if available
+result.verified_at  # => timestamp of verification
+result.disposable?  # => whether it's a disposable/temporary address (sub_state)
+result.role?        # => whether it's a role address (sub_state)
+```
+
+### Account Info
+
+```ruby
+client = Truelist::Client.new
+account = client.account
+
+account["email"]                   # => "team@company.com"
+account["name"]                    # => "Team Lead"
+account["uuid"]                    # => "a3828d19-..."
+account["account"]["payment_plan"] # => "pro"
 ```
 
 ### Sub-states
 
 | Sub-state | Meaning |
 |-----------|---------|
-| `ok` | Email is valid and deliverable |
-| `accept_all` | Domain accepts all emails (risky) |
-| `disposable_address` | Disposable/temporary email |
-| `role_address` | Role-based address (info@, admin@) |
+| `email_ok` | Email is valid and deliverable |
+| `is_disposable` | Disposable/temporary email |
+| `is_role` | Role-based address (info@, admin@) |
+| `failed_smtp_check` | SMTP check failed |
 | `failed_mx_check` | Domain has no mail server |
 | `failed_spam_trap` | Known spam trap address |
 | `failed_no_mailbox` | Mailbox does not exist |
 | `failed_greylisted` | Server temporarily rejected (greylisting) |
 | `failed_syntax_check` | Email format is invalid |
-| `unknown` | Could not determine status |
+| `unknown_error` | Could not determine status |
 
 ## Caching
 
@@ -191,10 +209,17 @@ Stub the API in your tests to avoid real HTTP calls. With WebMock:
 # spec/support/truelist.rb
 RSpec.configure do |config|
   config.before do
-    stub_request(:post, "https://api.truelist.io/api/v1/verify")
+    stub_request(:post, "https://api.truelist.io/api/v1/verify_inline")
+      .with(query: hash_including(email: /.+/))
       .to_return(
         status: 200,
-        body: { state: "valid", sub_state: "ok" }.to_json,
+        body: {
+          emails: [{
+            address: "user@example.com",
+            email_state: "ok",
+            email_sub_state: "email_ok"
+          }]
+        }.to_json,
         headers: { "Content-Type" => "application/json" }
       )
   end
@@ -205,7 +230,7 @@ Or stub at the client level:
 
 ```ruby
 allow(Truelist::Client).to receive(:new).and_return(
-  instance_double(Truelist::Client, validate: Truelist::Result.new(email: "user@example.com", state: "valid"))
+  instance_double(Truelist::Client, validate: Truelist::Result.new(email: "user@example.com", state: "ok"))
 )
 ```
 

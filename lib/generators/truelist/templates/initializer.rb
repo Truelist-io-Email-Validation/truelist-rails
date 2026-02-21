@@ -14,7 +14,7 @@ Truelist.configure do |config|
   # When false (default), returns an "unknown" result on errors.
   # config.raise_on_error = false
 
-  # Whether "risky" emails pass validation.
+  # Whether "accept_all" emails pass validation.
   # config.allow_risky = true
 
   # Optional cache store for validation results.
