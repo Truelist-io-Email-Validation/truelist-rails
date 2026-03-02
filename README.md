@@ -1,5 +1,6 @@
 # truelist-rails
 
+[![Free tier](https://img.shields.io/badge/free_plan-100_validations-4A7C59?style=flat-square)](https://truelist.io/pricing)
 Email validation for Rails, powered by [Truelist.io](https://truelist.io).
 
 [![Gem Version](https://badge.fury.io/rb/truelist-rails.svg)](https://badge.fury.io/rb/truelist-rails)
@@ -12,6 +13,9 @@ validates :email, deliverable: true
 ```
 
 Truelist checks whether an email address actually exists and can receive mail, catching typos, disposable addresses, and invalid mailboxes before they hit your database.
+
+> **Start free** — 100 validations + 10 enhanced credits, no credit card required.
+> [Get your API key →](https://app.truelist.io/signup?utm_source=github&utm_medium=readme&utm_campaign=free-plan&utm_content=truelist-rails)
 
 ## Installation
 
@@ -248,6 +252,10 @@ bundle install
 bundle exec rspec
 ```
 
+
+## Getting Started
+
+Sign up for a [free Truelist account](https://app.truelist.io/signup?utm_source=github&utm_medium=readme&utm_campaign=free-plan&utm_content=truelist-rails) to get your API key. The free plan includes 100 validations and 10 enhanced credits — no credit card required.
 ## License
 
 Released under the [MIT License](LICENSE).
